@@ -28,5 +28,6 @@ remediation_playbooks:
   - leapp_rpms_with_rsa_sha1_detected
   - leapp_unavailable_kde
   - leapp_vdo_check_needed
+  - leapp_unsupported_network_configuration    
 remediation_todo: []
 ...
