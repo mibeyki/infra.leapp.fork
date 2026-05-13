@@ -4,9 +4,9 @@
   ansible.builtin.shell:
     cmd: >-
       set -o pipefail;
-      export PATH={{ os_path }};
+      export PATH={{ leapp_os_path }};
       rpm -qa |
-      grep -ve '[\.|+]el{{ ansible_distribution_major_version }}' |
+      grep -ve '[\.|+]el{{ ansible_facts['distribution_major_version'] }}' |
       grep -vE '^(gpg-pubkey|libmodulemd|katello-ca-consumer)' |
       sort
   register: unsigned_packages_post
@@ -18,6 +18,16 @@
 - name: handle-old-packages | Set a fact that lists the old packages and packages not versioned by rhel release
   ansible.builtin.set_fact:
     unsigned_packages_post: "{{ unsigned_packages_post.stdout_lines }}"
+    cacheable: true
+
+- name: handle-old-packages | Filter out database, docker, container packages from removal candidates
+  ansible.builtin.set_fact:
+    unsigned_packages_post: >-
+      {{
+        unsigned_packages_post | reject('search',
+          leapp_package_removal_exclude_pattern
+        ) | list
+      }}
     cacheable: true
 
 - name: handle-old-packages | Diff the list of current un-versioned packages and the previous list of un-versioned packages and set fact for missing packages
@@ -60,7 +70,6 @@
     name: "{{ unsigned_packages_post }}"
     state: absent
   when:
-    - remove_old_rhel_packages
-    - ansible_distribution_major_version | int >= 7
-
+    - leapp_remove_old_rhel_packages
+    - ansible_facts["distribution_major_version"] | int >= 7
 ...
