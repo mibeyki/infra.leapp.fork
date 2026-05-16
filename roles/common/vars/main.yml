@@ -1,6 +1,15 @@
 ---
 # vars file for common
-preupg_return_codes:
+__leapp_common_required_facts:
+  - architecture
+  - date_time
+  - distribution
+  - distribution_version
+  - distribution_major_version
+  - pkg_mgr
+__leapp_common_required_facts_subsets: "{{ ['!all', '!min'] +
+  __leapp_common_required_facts }}"
+__leapp_preupg_return_codes:
   0:
     msg: "preupg works properly and modules exit with the following results: PASS, FIXED, INFORMATIONAL, NEEDS_INSPECTION, NOT_APPLICABLE."
     fail: false
@@ -42,7 +51,9 @@ preupg_return_codes:
     fail: true
     inhibited: true
   27:
-    msg: The /usr/share/preupgrade/data/preassessment/scripts.txt file is missing. The Preupgrade Assistant is not installed properly and needs to be reinstalled.
+    msg: >-
+      The /usr/share/preupgrade/data/preassessment/scripts.txt file is missing. The Preupgrade Assistant is not
+      installed properly and needs to be reinstalled.
     fail: true
     inhibited: true
   28:
@@ -61,4 +72,11 @@ preupg_return_codes:
     msg: preupg command not found.  Analysis must be run first.
     fail: true
     inhibited: true
+
+__leapp_enable_repos_args: "{{ ('--enablerepo ' + leapp_repos_enabled | default([], true) | join(' --enablerepo '))
+  if leapp_repos_enabled | length > 0 else '' }}"
+
+leapp_result_filename: "{{ '/root/preupgrade/result.txt' if ansible_facts['distribution_major_version'] == '6'
+  else '/var/log/leapp/leapp-report.txt' }}"
+
 ...

@@ -15,22 +15,12 @@ exclude_paths:
   - changelogs/
   - docs/
   - collections/
+  - tests/tmt/
+  - library/leapp_lib/
 # parseable: true
 # quiet: true
 # strict: true
 # verbosity: 1
-
-# Mock modules or roles in order to pass ansible-playbook --syntax-check
-# Mocking these modules so they do not give errors due to the galaxy importer
-# not being able to pull community.general (not being validated)
-mock_modules:
-  - community.general.redhat_subscription
-  - community.general.modprobe
-  - community.general.archive
-  - community.general.yum_versionlock
-  - community.general.rhsm_repository
-  - ansible.posix.selinux
-  - ansible.posix.mount
 
 # mock_roles:
 #   - mocked_role
@@ -59,9 +49,7 @@ use_default_rules: true
 # When putting ignores inside the ignore file, they are marked as ignored, but
 # still visible, making it easier to address later.
 skip_list:
-  - yaml[colons] # Violations reported by yamllint.
-  - yaml[line-length] # Violations reported by yamllint.
-  - var-naming
+  - var-naming[no-role-prefix]
 
 # Ansible-lint does not automatically load rules that have the 'opt-in' tag.
 # You must enable opt-in rules by listing each rule 'id' below.
@@ -81,11 +69,6 @@ enable_list:
 # Ansible-lint does not fail on warnings from the rules or tags listed below
 warn_list:
   - experimental # experimental is included in the implicit list
-  - git-latest # Allow for newest git version
-  - package-latest # Allow newest package version
-  - risky-file-permissions # File permissions unset or incorrect.
-  - template-instead-of-copy # Templated files should use template instead of copy
-  - sanity[cannot-ignore] # cope with shebang test bug
 
 # Some rules can transform files to fix (or make it easier to fix) identified
 # errors. `ansible-lint --fix` will reformat YAML files and run these transforms.
