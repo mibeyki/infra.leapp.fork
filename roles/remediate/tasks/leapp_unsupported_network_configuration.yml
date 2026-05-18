@@ -169,8 +169,8 @@
 
     - name: leapp_unsupported_network_configuration | Reboot system to apply network interface changes
       ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_timeout }}"
-        post_reboot_delay: "{{ post_reboot_delay }}"
-      timeout: "{{ reboot_timeout }}"
+        reboot_timeout: "{{ leapp_reboot_timeout }}"
+        post_reboot_delay: "{{ leapp_post_reboot_delay }}"
+      timeout: "{{ leapp_reboot_timeout }}"
       when: src_interfaces | length > 0
 ...
