@@ -26,7 +26,7 @@
 
     - name: leapp_partitions_with_noexec | Remount using storage system role
       ansible.builtin.include_role:
-        name: linux-system-roles.storage
+        name: "{{ leapp_system_roles_collection }}.storage"
       vars:
         storage_volumes: "{{ leapp_target_volumes }}"
         storage_safe_mode: true
